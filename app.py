@@ -1,39 +1,58 @@
+# ===============================
+# Real-Time Stock Price Prediction App
+# ===============================
+
 import streamlit as st
 import yfinance as yf
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import LinearRegression
 
-st.title("📈 Real-Time Stock Price Prediction App")
+# -------------------------------
+# App Title
+# -------------------------------
+st.set_page_config(page_title="Stock Prediction App", layout="centered")
+st.title("📈 Real-Time Stock Price Prediction")
+st.write("No CSV | Live Data | ML Model")
 
-# User input
-symbol = st.text_input("Enter Stock Symbol (e.g. AAPL, MSFT)", "AAPL")
+# -------------------------------
+# User Input
+# -------------------------------
+symbol = st.text_input("Enter Stock Symbol (AAPL, MSFT, TSLA)", "AAPL")
 
-if st.button("Predict"):
-    # 1. Fetch live data (NO CSV)
+# -------------------------------
+# Button
+# -------------------------------
+if st.button("Predict Next Day Price"):
+
+    # 1️⃣ Fetch live stock data (NO CSV)
     df = yf.download(symbol, period="5y")
 
     if df.empty:
-        st.error("Invalid stock symbol")
+        st.error("❌ Invalid stock symbol")
     else:
-        # 2. Use Close price
+        # 2️⃣ Use Close price only
         df = df[['Close']].dropna()
 
-        # 3. Feature engineering
+        # 3️⃣ Feature engineering (Day index)
         df['Day'] = np.arange(len(df))
 
         X = df[['Day']]
         y = df['Close']
 
-        # 4. Train model
+        # 4️⃣ Train ML model
         model = LinearRegression()
         model.fit(X, y)
 
-        # 5. Predict next day price
-        next_day = [[len(df)]]
+        # 5️⃣ Predict next day price
+        next_day = np.array([[len(df)]])
         prediction = model.predict(next_day)
 
-        # 6. Output
-        predicted_price = float(prediction[0])
-        st.subheader(f"Predicted Next Close Price: ${predicted_price:.2f}")
+        # ✅ SAFE conversion (NO ERROR)
+        predicted_price = prediction.item()
+
+        # 6️⃣ Show result
+        st.subheader(f"✅ Predicted Next Close Price: ${predicted_price:.2f}")
+
+        # 7️⃣ Show chart
         st.line_chart(df['Close'])
