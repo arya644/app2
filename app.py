@@ -34,5 +34,6 @@ if st.button("Predict"):
         prediction = model.predict(next_day)
 
         # 6. Output
-        st.subheader(f"Predicted Next Close Price: ${prediction[0]:.2f}")
+        predicted_price = float(prediction[0])
+st.subheader(f"Predicted Next Close Price: ${predicted_price:.2f}")
         st.line_chart(df['Close'])
