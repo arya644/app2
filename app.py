@@ -13,7 +13,6 @@ from sklearn.linear_model import LinearRegression
 # -------------------------------
 st.set_page_config(page_title="Stock Prediction App", layout="centered")
 st.title("📈 Real-Time Stock Price Prediction")
-st.write("No CSV | Live Data | ML Model")
 
 # -------------------------------
 # User Input
